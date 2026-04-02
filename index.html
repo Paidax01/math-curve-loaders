@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Curve Loaders</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">Mathematical Curve Motion</p>
+        <h1>基于数学曲线的加载动画集</h1>
+      </section>
+
+      <section class="showcase">
+        <section id="gallery" class="gallery" aria-label="数学曲线动画画廊"></section>
+      </section>
+    </main>
+
+    <div id="viewer-modal" class="viewer-modal" aria-hidden="true">
+      <div id="viewer-backdrop" class="viewer-backdrop"></div>
+      <section id="viewer" class="viewer" aria-live="polite" role="dialog" aria-modal="true" aria-labelledby="viewer-title">
+        <div class="viewer-preview">
+          <div class="viewer-stage">
+            <svg
+              id="viewer-svg"
+              class="viewer-svg"
+              aria-hidden="true"
+              viewBox="0 0 100 100"
+              fill="none"
+            >
+              <g id="viewer-group">
+                <path
+                  id="viewer-path"
+                  stroke="currentColor"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  opacity="0.1"
+                ></path>
+              </g>
+            </svg>
+          </div>
+          <div class="viewer-copy">
+            <p id="viewer-tag" class="viewer-tag"></p>
+            <h2 id="viewer-title" class="viewer-title"></h2>
+            <p id="viewer-desc" class="viewer-desc"></p>
+            <div class="viewer-formula-block">
+              <p class="viewer-code-label">Formula</p>
+              <pre id="viewer-formula" class="viewer-formula"></pre>
+            </div>
+          </div>
+        </div>
+
+        <aside class="viewer-code-panel">
+          <div class="viewer-code-head">
+            <p class="viewer-code-label">Code</p>
+            <div class="viewer-actions">
+              <button id="viewer-copy" class="viewer-close" type="button">复制</button>
+              <button id="viewer-close" class="viewer-close" type="button">关闭</button>
+            </div>
+          </div>
+          <pre id="viewer-code" class="viewer-code"><code></code></pre>
+        </aside>
+      </section>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>

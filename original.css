@@ -1,0 +1,32 @@
+:root {
+  color-scheme: dark;
+  --bg: #000000;
+  --accent: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--accent);
+}
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+#thinking-indicator {
+  overflow: visible;
+  flex-shrink: 0;
+}
