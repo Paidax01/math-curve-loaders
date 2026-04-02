@@ -45,6 +45,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-width: 92px;
   padding: 10px 14px;
   border-radius: 999px;
@@ -64,6 +65,12 @@ body {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
+}
+
+.repo-link-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .showcase {
