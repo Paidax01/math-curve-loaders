@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,6 +10,10 @@
     <main class="page">
       <section class="hero">
         <div class="hero-bar">
+          <div class="lang-switch" role="group" aria-label="Language switch">
+            <button id="lang-en" class="lang-button is-active" type="button">EN</button>
+            <button id="lang-zh" class="lang-button" type="button">中文</button>
+          </div>
           <a
             class="repo-link"
             href="https://github.com/Paidax01/math-curve-loaders"
@@ -29,12 +33,12 @@
             GitHub
           </a>
         </div>
-        <p class="eyebrow">Mathematical Curve Motion</p>
-        <h1>基于数学曲线的加载动画集</h1>
+        <p id="hero-eyebrow" class="eyebrow">Mathematical Curve Motion</p>
+        <h1 id="hero-title">A Gallery of Mathematical Loading Animations</h1>
       </section>
 
       <section class="showcase">
-        <section id="gallery" class="gallery" aria-label="数学曲线动画画廊"></section>
+        <section id="gallery" class="gallery" aria-label="Mathematical curve animation gallery"></section>
       </section>
     </main>
 
@@ -68,13 +72,13 @@
             <p id="viewer-desc" class="viewer-desc"></p>
             <div class="viewer-controls-block">
               <div class="viewer-section-head">
-                <p class="viewer-code-label">Controls</p>
-                <button id="viewer-reset" class="viewer-reset" type="button">重置</button>
+                <p id="viewer-controls-label" class="viewer-code-label">Controls</p>
+                <button id="viewer-reset" class="viewer-reset" type="button">Reset</button>
               </div>
               <div id="viewer-controls" class="viewer-controls"></div>
             </div>
             <div class="viewer-formula-block">
-              <p class="viewer-code-label">Formula</p>
+              <p id="viewer-formula-label" class="viewer-code-label">Formula</p>
               <pre id="viewer-formula" class="viewer-formula"></pre>
             </div>
           </div>
@@ -82,10 +86,10 @@
 
         <aside class="viewer-code-panel">
           <div class="viewer-code-head">
-            <p class="viewer-code-label">Code</p>
+            <p id="viewer-code-label" class="viewer-code-label">Code</p>
             <div class="viewer-actions">
-              <button id="viewer-copy" class="viewer-close" type="button">复制</button>
-              <button id="viewer-close" class="viewer-close" type="button">关闭</button>
+              <button id="viewer-copy" class="viewer-close" type="button">Copy</button>
+              <button id="viewer-close" class="viewer-close" type="button">Close</button>
             </div>
           </div>
           <pre id="viewer-code" class="viewer-code"><code></code></pre>
