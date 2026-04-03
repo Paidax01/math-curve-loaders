@@ -70,11 +70,23 @@ const curves = [
     tag: "Custom Rose Trail",
     descriptionEn: "The base circle is carved by a sevenfold cosine term, so the trail blooms into a rotating seven-petal ring.",
     descriptionZh: "基础圆周叠加了 7 倍频余弦项，所以轨迹会长成一个旋转中的七瓣花环。",
-    formula: [
-      "x(t) = 50 + (7 cos t - 3s cos 7t) * 3.9",
-      "y(t) = 50 + (7 sin t - 3s sin 7t) * 3.9",
-      "s = detailScale(time)",
-    ].join("\n"),
+    baseRadius: 7,
+    detailAmplitude: 3,
+    petalCount: 7,
+    curveScale: 3.9,
+    controls: [
+      { key: "baseRadius", labelEn: "Base radius", labelZh: "基础半径", min: 4, max: 10, step: 0.1 },
+      { key: "detailAmplitude", labelEn: "Detail", labelZh: "细节振幅", min: 1, max: 5, step: 0.1 },
+      { key: "petalCount", labelEn: "Petals", labelZh: "花瓣数", min: 3, max: 12, step: 1 },
+      { key: "curveScale", labelEn: "Scale", labelZh: "缩放", min: 2.5, max: 5.5, step: 0.1 },
+    ],
+    formula(config) {
+      return [
+        `x(t) = 50 + (${config.baseRadius.toFixed(1)} cos t - ${config.detailAmplitude.toFixed(1)}s cos ${Math.round(config.petalCount)}t) * ${config.curveScale.toFixed(1)}`,
+        `y(t) = 50 + (${config.baseRadius.toFixed(1)} sin t - ${config.detailAmplitude.toFixed(1)}s sin ${Math.round(config.petalCount)}t) * ${config.curveScale.toFixed(1)}`,
+        "s = detailScale(time)",
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 64,
     trailSpan: 0.38,
@@ -82,13 +94,14 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4200,
     strokeWidth: 5.5,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const x = 7 * Math.cos(t) - 3 * detailScale * Math.cos(7 * t);
-      const y = 7 * Math.sin(t) - 3 * detailScale * Math.sin(7 * t);
+      const petals = Math.round(config.petalCount);
+      const x = config.baseRadius * Math.cos(t) - config.detailAmplitude * detailScale * Math.cos(petals * t);
+      const y = config.baseRadius * Math.sin(t) - config.detailAmplitude * detailScale * Math.sin(petals * t);
       return {
-        x: 50 + x * 3.9,
-        y: 50 + y * 3.9,
+        x: 50 + x * config.curveScale,
+        y: 50 + y * config.curveScale,
       };
     },
   },
@@ -97,11 +110,23 @@ const curves = [
     tag: "Custom Rose Trail",
     descriptionEn: "Replacing the sevenfold term with a fivefold term reduces the inner loops, giving the curve a cleaner five-petal rhythm.",
     descriptionZh: "把 7 倍频项换成 5 倍频后，内部环绕圈减少，整条轨迹会呈现更简洁的五瓣节奏。",
-    formula: [
-      "x(t) = 50 + (7 cos t - 3s cos 5t) * 3.9",
-      "y(t) = 50 + (7 sin t - 3s sin 5t) * 3.9",
-      "s = detailScale(time)",
-    ].join("\n"),
+    baseRadius: 7,
+    detailAmplitude: 3,
+    petalCount: 5,
+    curveScale: 3.9,
+    controls: [
+      { key: "baseRadius", labelEn: "Base radius", labelZh: "基础半径", min: 4, max: 10, step: 0.1 },
+      { key: "detailAmplitude", labelEn: "Detail", labelZh: "细节振幅", min: 1, max: 5, step: 0.1 },
+      { key: "petalCount", labelEn: "Petals", labelZh: "花瓣数", min: 3, max: 12, step: 1 },
+      { key: "curveScale", labelEn: "Scale", labelZh: "缩放", min: 2.5, max: 5.5, step: 0.1 },
+    ],
+    formula(config) {
+      return [
+        `x(t) = 50 + (${config.baseRadius.toFixed(1)} cos t - ${config.detailAmplitude.toFixed(1)}s cos ${Math.round(config.petalCount)}t) * ${config.curveScale.toFixed(1)}`,
+        `y(t) = 50 + (${config.baseRadius.toFixed(1)} sin t - ${config.detailAmplitude.toFixed(1)}s sin ${Math.round(config.petalCount)}t) * ${config.curveScale.toFixed(1)}`,
+        "s = detailScale(time)",
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 62,
     trailSpan: 0.38,
@@ -109,13 +134,14 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4200,
     strokeWidth: 5.5,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const x = 7 * Math.cos(t) - 3 * detailScale * Math.cos(5 * t);
-      const y = 7 * Math.sin(t) - 3 * detailScale * Math.sin(5 * t);
+      const petals = Math.round(config.petalCount);
+      const x = config.baseRadius * Math.cos(t) - config.detailAmplitude * detailScale * Math.cos(petals * t);
+      const y = config.baseRadius * Math.sin(t) - config.detailAmplitude * detailScale * Math.sin(petals * t);
       return {
-        x: 50 + x * 3.9,
-        y: 50 + y * 3.9,
+        x: 50 + x * config.curveScale,
+        y: 50 + y * config.curveScale,
       };
     },
   },
@@ -124,11 +150,23 @@ const curves = [
     tag: "Custom Rose Trail",
     descriptionEn: "A ninefold term packs more inner turns into the same orbit, so the floral ring feels denser and more finely braided.",
     descriptionZh: "9 倍频项会把更多小回环压进同一圈轨道里，所以花环会更密、更细。",
-    formula: [
-      "x(t) = 50 + (7 cos t - 3s cos 9t) * 3.9",
-      "y(t) = 50 + (7 sin t - 3s sin 9t) * 3.9",
-      "s = detailScale(time)",
-    ].join("\n"),
+    baseRadius: 7,
+    detailAmplitude: 3,
+    petalCount: 9,
+    curveScale: 3.9,
+    controls: [
+      { key: "baseRadius", labelEn: "Base radius", labelZh: "基础半径", min: 4, max: 10, step: 0.1 },
+      { key: "detailAmplitude", labelEn: "Detail", labelZh: "细节振幅", min: 1, max: 5, step: 0.1 },
+      { key: "petalCount", labelEn: "Petals", labelZh: "花瓣数", min: 3, max: 12, step: 1 },
+      { key: "curveScale", labelEn: "Scale", labelZh: "缩放", min: 2.5, max: 5.5, step: 0.1 },
+    ],
+    formula(config) {
+      return [
+        `x(t) = 50 + (${config.baseRadius.toFixed(1)} cos t - ${config.detailAmplitude.toFixed(1)}s cos ${Math.round(config.petalCount)}t) * ${config.curveScale.toFixed(1)}`,
+        `y(t) = 50 + (${config.baseRadius.toFixed(1)} sin t - ${config.detailAmplitude.toFixed(1)}s sin ${Math.round(config.petalCount)}t) * ${config.curveScale.toFixed(1)}`,
+        "s = detailScale(time)",
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 68,
     trailSpan: 0.39,
@@ -136,13 +174,14 @@ const curves = [
     rotationDurationMs: 30000,
     pulseDurationMs: 4200,
     strokeWidth: 5.5,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const x = 7 * Math.cos(t) - 3 * detailScale * Math.cos(9 * t);
-      const y = 7 * Math.sin(t) - 3 * detailScale * Math.sin(9 * t);
+      const petals = Math.round(config.petalCount);
+      const x = config.baseRadius * Math.cos(t) - config.detailAmplitude * detailScale * Math.cos(petals * t);
+      const y = config.baseRadius * Math.sin(t) - config.detailAmplitude * detailScale * Math.sin(petals * t);
       return {
-        x: 50 + x * 3.9,
-        y: 50 + y * 3.9,
+        x: 50 + x * config.curveScale,
+        y: 50 + y * config.curveScale,
       };
     },
   },
@@ -151,11 +190,23 @@ const curves = [
     tag: "r = cos(kθ)",
     descriptionEn: "The radius expands and contracts with cos(7t), so the orbit breathes into repeated petals while staying anchored to a circle.",
     descriptionZh: "半径随 cos(7t) 起伏，所以整条轨迹会在圆周上反复鼓起花瓣，同时保持绕圈感。",
-    formula: [
-      "r(t) = 7 - 2.7s cos(7t)",
-      "x(t) = 50 + cos t · r(t) · 3.9",
-      "y(t) = 50 + sin t · r(t) · 3.9",
-    ].join("\n"),
+    orbitRadius: 7,
+    detailAmplitude: 2.7,
+    petalCount: 7,
+    curveScale: 3.9,
+    controls: [
+      { key: "orbitRadius", labelEn: "Base radius", labelZh: "基础半径", min: 4, max: 10, step: 0.1 },
+      { key: "detailAmplitude", labelEn: "Detail", labelZh: "细节振幅", min: 1, max: 5, step: 0.1 },
+      { key: "petalCount", labelEn: "k", labelZh: "k 值", min: 3, max: 12, step: 1 },
+      { key: "curveScale", labelEn: "Scale", labelZh: "缩放", min: 2.5, max: 5.5, step: 0.1 },
+    ],
+    formula(config) {
+      return [
+        `r(t) = ${config.orbitRadius.toFixed(1)} - ${config.detailAmplitude.toFixed(1)}s cos(${Math.round(config.petalCount)}t)`,
+        `x(t) = 50 + cos t · r(t) · ${config.curveScale.toFixed(1)}`,
+        `y(t) = 50 + sin t · r(t) · ${config.curveScale.toFixed(1)}`,
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 72,
     trailSpan: 0.42,
@@ -163,12 +214,13 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4600,
     strokeWidth: 5.2,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const r = 7 - 2.7 * detailScale * Math.cos(7 * t);
+      const k = Math.round(config.petalCount);
+      const r = config.orbitRadius - config.detailAmplitude * detailScale * Math.cos(k * t);
       return {
-        x: 50 + Math.cos(t) * r * 3.9,
-        y: 50 + Math.sin(t) * r * 3.9,
+        x: 50 + Math.cos(t) * r * config.curveScale,
+        y: 50 + Math.sin(t) * r * config.curveScale,
       };
     },
   },
@@ -177,12 +229,27 @@ const curves = [
     tag: "r = a cos(kθ)",
     descriptionEn: "Using r = a cos(5t) creates five evenly spaced lobes, and the breathing multiplier gently swells each petal in and out.",
     descriptionZh: "使用 r = a cos(5t) 会得到五个均匀分布的花瓣，再叠加呼吸倍率后，每片花瓣都会轻微胀缩。",
-    formula: [
-      "r(t) = a(0.72 + 0.28s) cos(5t)",
-      "a = 9.2 + 0.6s",
-      "x(t) = 50 + cos t · r(t) · 3.25",
-      "y(t) = 50 + sin t · r(t) · 3.25",
-    ].join("\n"),
+    roseA: 9.2,
+    roseABoost: 0.6,
+    roseBreathBase: 0.72,
+    roseBreathBoost: 0.28,
+    roseK: 5,
+    roseScale: 3.25,
+    controls: [
+      { key: "roseA", labelEn: "a", labelZh: "a", min: 5, max: 14, step: 0.1 },
+      { key: "roseABoost", labelEn: "a boost", labelZh: "a 呼吸量", min: 0, max: 2, step: 0.05 },
+      { key: "roseBreathBase", labelEn: "Base pulse", labelZh: "基础呼吸", min: 0.3, max: 1.2, step: 0.01 },
+      { key: "roseBreathBoost", labelEn: "Pulse boost", labelZh: "呼吸增量", min: 0, max: 0.8, step: 0.01 },
+      { key: "roseK", labelEn: "k", labelZh: "k 值", min: 2, max: 10, step: 1 },
+      { key: "roseScale", labelEn: "Scale", labelZh: "缩放", min: 2, max: 5, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        `r(t) = (${config.roseA.toFixed(1)} + ${config.roseABoost.toFixed(2)}s)(${config.roseBreathBase.toFixed(2)} + ${config.roseBreathBoost.toFixed(2)}s) cos(${Math.round(config.roseK)}t)`,
+        `x(t) = 50 + cos t · r(t) · ${config.roseScale.toFixed(2)}`,
+        `y(t) = 50 + sin t · r(t) · ${config.roseScale.toFixed(2)}`,
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 78,
     trailSpan: 0.32,
@@ -192,11 +259,12 @@ const curves = [
     strokeWidth: 4.5,
     point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const a = 9.2 + detailScale * 0.6;
-      const r = a * (0.72 + detailScale * 0.28) * Math.cos(5 * t);
+      const a = config.roseA + detailScale * config.roseABoost;
+      const k = Math.round(config.roseK);
+      const r = a * (config.roseBreathBase + detailScale * config.roseBreathBoost) * Math.cos(k * t);
       return {
-        x: 50 + Math.cos(t) * r * 3.25,
-        y: 50 + Math.sin(t) * r * 3.25,
+        x: 50 + Math.cos(t) * r * config.roseScale,
+        y: 50 + Math.sin(t) * r * config.roseScale,
       };
     },
   },
@@ -205,12 +273,25 @@ const curves = [
     tag: "r = a cos(2θ)",
     descriptionEn: "With k = 2, the cosine radius forms broad opposing petals, and the breathing factor makes the center pulse like the original.",
     descriptionZh: "当 k = 2 时，余弦半径会生成一组宽阔的对称花瓣，呼吸倍率则让中心像原版一样鼓动。",
-    formula: [
-      "r(t) = a(0.72 + 0.28s) cos(2t)",
-      "a = 9.2 + 0.6s",
-      "x(t) = 50 + cos t · r(t) · 3.25",
-      "y(t) = 50 + sin t · r(t) · 3.25",
-    ].join("\n"),
+    roseA: 9.2,
+    roseABoost: 0.6,
+    roseBreathBase: 0.72,
+    roseBreathBoost: 0.28,
+    roseScale: 3.25,
+    controls: [
+      { key: "roseA", labelEn: "a", labelZh: "a", min: 5, max: 14, step: 0.1 },
+      { key: "roseABoost", labelEn: "a boost", labelZh: "a 呼吸量", min: 0, max: 2, step: 0.05 },
+      { key: "roseBreathBase", labelEn: "Base pulse", labelZh: "基础呼吸", min: 0.3, max: 1.2, step: 0.01 },
+      { key: "roseBreathBoost", labelEn: "Pulse boost", labelZh: "呼吸增量", min: 0, max: 0.8, step: 0.01 },
+      { key: "roseScale", labelEn: "Scale", labelZh: "缩放", min: 2, max: 5, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        `r(t) = (${config.roseA.toFixed(1)} + ${config.roseABoost.toFixed(2)}s)(${config.roseBreathBase.toFixed(2)} + ${config.roseBreathBoost.toFixed(2)}s) cos(2t)`,
+        `x(t) = 50 + cos t · r(t) · ${config.roseScale.toFixed(2)}`,
+        `y(t) = 50 + sin t · r(t) · ${config.roseScale.toFixed(2)}`,
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 74,
     trailSpan: 0.3,
@@ -218,13 +299,13 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4300,
     strokeWidth: 4.6,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const a = 9.2 + detailScale * 0.6;
-      const r = a * (0.72 + detailScale * 0.28) * Math.cos(2 * t);
+      const a = config.roseA + detailScale * config.roseABoost;
+      const r = a * (config.roseBreathBase + detailScale * config.roseBreathBoost) * Math.cos(2 * t);
       return {
-        x: 50 + Math.cos(t) * r * 3.25,
-        y: 50 + Math.sin(t) * r * 3.25,
+        x: 50 + Math.cos(t) * r * config.roseScale,
+        y: 50 + Math.sin(t) * r * config.roseScale,
       };
     },
   },
@@ -233,12 +314,25 @@ const curves = [
     tag: "r = a cos(3θ)",
     descriptionEn: "With k = 3, the curve resolves into three rotating petals, and the inner breathing keeps the motion from feeling mathematically rigid.",
     descriptionZh: "当 k = 3 时，曲线会落成三瓣旋转结构，而内层呼吸感会让它不只是静态的数学图形。",
-    formula: [
-      "r(t) = a(0.72 + 0.28s) cos(3t)",
-      "a = 9.2 + 0.6s",
-      "x(t) = 50 + cos t · r(t) · 3.25",
-      "y(t) = 50 + sin t · r(t) · 3.25",
-    ].join("\n"),
+    roseA: 9.2,
+    roseABoost: 0.6,
+    roseBreathBase: 0.72,
+    roseBreathBoost: 0.28,
+    roseScale: 3.25,
+    controls: [
+      { key: "roseA", labelEn: "a", labelZh: "a", min: 5, max: 14, step: 0.1 },
+      { key: "roseABoost", labelEn: "a boost", labelZh: "a 呼吸量", min: 0, max: 2, step: 0.05 },
+      { key: "roseBreathBase", labelEn: "Base pulse", labelZh: "基础呼吸", min: 0.3, max: 1.2, step: 0.01 },
+      { key: "roseBreathBoost", labelEn: "Pulse boost", labelZh: "呼吸增量", min: 0, max: 0.8, step: 0.01 },
+      { key: "roseScale", labelEn: "Scale", labelZh: "缩放", min: 2, max: 5, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        `r(t) = (${config.roseA.toFixed(1)} + ${config.roseABoost.toFixed(2)}s)(${config.roseBreathBase.toFixed(2)} + ${config.roseBreathBoost.toFixed(2)}s) cos(3t)`,
+        `x(t) = 50 + cos t · r(t) · ${config.roseScale.toFixed(2)}`,
+        `y(t) = 50 + sin t · r(t) · ${config.roseScale.toFixed(2)}`,
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 76,
     trailSpan: 0.31,
@@ -246,13 +340,13 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4400,
     strokeWidth: 4.6,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const a = 9.2 + detailScale * 0.6;
-      const r = a * (0.72 + detailScale * 0.28) * Math.cos(3 * t);
+      const a = config.roseA + detailScale * config.roseABoost;
+      const r = a * (config.roseBreathBase + detailScale * config.roseBreathBoost) * Math.cos(3 * t);
       return {
-        x: 50 + Math.cos(t) * r * 3.25,
-        y: 50 + Math.sin(t) * r * 3.25,
+        x: 50 + Math.cos(t) * r * config.roseScale,
+        y: 50 + Math.sin(t) * r * config.roseScale,
       };
     },
   },
@@ -261,12 +355,25 @@ const curves = [
     tag: "r = a cos(4θ)",
     descriptionEn: "With k = 4, the petals settle into a balanced cross-like rose, and the breathing core adds the same soft pulse as the original loader.",
     descriptionZh: "当 k = 4 时，花瓣会落成更均衡的十字型玫瑰，而内圆呼吸让它保留原版那种轻微脉动。",
-    formula: [
-      "r(t) = a(0.72 + 0.28s) cos(4t)",
-      "a = 9.2 + 0.6s",
-      "x(t) = 50 + cos t · r(t) · 3.25",
-      "y(t) = 50 + sin t · r(t) · 3.25",
-    ].join("\n"),
+    roseA: 9.2,
+    roseABoost: 0.6,
+    roseBreathBase: 0.72,
+    roseBreathBoost: 0.28,
+    roseScale: 3.25,
+    controls: [
+      { key: "roseA", labelEn: "a", labelZh: "a", min: 5, max: 14, step: 0.1 },
+      { key: "roseABoost", labelEn: "a boost", labelZh: "a 呼吸量", min: 0, max: 2, step: 0.05 },
+      { key: "roseBreathBase", labelEn: "Base pulse", labelZh: "基础呼吸", min: 0.3, max: 1.2, step: 0.01 },
+      { key: "roseBreathBoost", labelEn: "Pulse boost", labelZh: "呼吸增量", min: 0, max: 0.8, step: 0.01 },
+      { key: "roseScale", labelEn: "Scale", labelZh: "缩放", min: 2, max: 5, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        `r(t) = (${config.roseA.toFixed(1)} + ${config.roseABoost.toFixed(2)}s)(${config.roseBreathBase.toFixed(2)} + ${config.roseBreathBoost.toFixed(2)}s) cos(4t)`,
+        `x(t) = 50 + cos t · r(t) · ${config.roseScale.toFixed(2)}`,
+        `y(t) = 50 + sin t · r(t) · ${config.roseScale.toFixed(2)}`,
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 78,
     trailSpan: 0.32,
@@ -274,13 +381,13 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4500,
     strokeWidth: 4.6,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const a = 9.2 + detailScale * 0.6;
-      const r = a * (0.72 + detailScale * 0.28) * Math.cos(4 * t);
+      const a = config.roseA + detailScale * config.roseABoost;
+      const r = a * (config.roseBreathBase + detailScale * config.roseBreathBoost) * Math.cos(4 * t);
       return {
-        x: 50 + Math.cos(t) * r * 3.25,
-        y: 50 + Math.sin(t) * r * 3.25,
+        x: 50 + Math.cos(t) * r * config.roseScale,
+        y: 50 + Math.sin(t) * r * config.roseScale,
       };
     },
   },
@@ -289,11 +396,26 @@ const curves = [
     tag: "x = sin(at), y = sin(bt)",
     descriptionEn: "Different sine frequencies on x and y make the path cross itself repeatedly, producing the woven feel of an oscilloscope trace.",
     descriptionZh: "x 和 y 使用不同频率的正弦后，路径会不断交叉回绕，所以会呈现示波器一样的编织感。",
-    formula: [
-      "A = 24 + 6s",
-      "x(t) = 50 + sin(3t + π/2) · A",
-      "y(t) = 50 + sin(4t) · 0.92A",
-    ].join("\n"),
+    lissajousAmp: 24,
+    lissajousAmpBoost: 6,
+    lissajousAX: 3,
+    lissajousBY: 4,
+    lissajousPhase: 1.57,
+    lissajousYScale: 0.92,
+    controls: [
+      { key: "lissajousAmp", labelEn: "Amplitude", labelZh: "振幅", min: 8, max: 36, step: 0.5 },
+      { key: "lissajousAmpBoost", labelEn: "Amp pulse", labelZh: "振幅呼吸", min: 0, max: 12, step: 0.1 },
+      { key: "lissajousAX", labelEn: "a", labelZh: "a", min: 1, max: 8, step: 1 },
+      { key: "lissajousBY", labelEn: "b", labelZh: "b", min: 1, max: 8, step: 1 },
+      { key: "lissajousYScale", labelEn: "Y scale", labelZh: "Y 缩放", min: 0.4, max: 1.4, step: 0.01 },
+    ],
+    formula(config) {
+      return [
+        `A = ${config.lissajousAmp.toFixed(1)} + ${config.lissajousAmpBoost.toFixed(1)}s`,
+        `x(t) = 50 + sin(${Math.round(config.lissajousAX)}t + ${config.lissajousPhase.toFixed(2)}) · A`,
+        `y(t) = 50 + sin(${Math.round(config.lissajousBY)}t) · ${config.lissajousYScale.toFixed(2)}A`,
+      ].join("\n");
+    },
     rotate: false,
     particleCount: 68,
     trailSpan: 0.34,
@@ -301,12 +423,12 @@ const curves = [
     rotationDurationMs: 36000,
     pulseDurationMs: 5400,
     strokeWidth: 4.7,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const amp = 24 + detailScale * 6;
+      const amp = config.lissajousAmp + detailScale * config.lissajousAmpBoost;
       return {
-        x: 50 + Math.sin(3 * t + Math.PI / 2) * amp,
-        y: 50 + Math.sin(4 * t) * (amp * 0.92),
+        x: 50 + Math.sin(Math.round(config.lissajousAX) * t + config.lissajousPhase) * amp,
+        y: 50 + Math.sin(Math.round(config.lissajousBY) * t) * (amp * config.lissajousYScale),
       };
     },
   },
@@ -315,11 +437,19 @@ const curves = [
     tag: "Bernoulli Lemniscate",
     descriptionEn: "The 1 + sin²t denominator pinches the center while preserving two lobes, so the curve naturally reads as a breathing infinity sign.",
     descriptionZh: "分母里的 1 + sin²t 会把中间收紧、两侧保留双环，因此它天然像一个会呼吸的无限符号。",
-    formula: [
-      "a = 20 + 7s",
-      "x(t) = 50 + a cos t / (1 + sin² t)",
-      "y(t) = 50 + a sin t cos t / (1 + sin² t)",
-    ].join("\n"),
+    lemniscateA: 20,
+    lemniscateBoost: 7,
+    controls: [
+      { key: "lemniscateA", labelEn: "a", labelZh: "a", min: 8, max: 30, step: 0.5 },
+      { key: "lemniscateBoost", labelEn: "Pulse", labelZh: "呼吸量", min: 0, max: 12, step: 0.1 },
+    ],
+    formula(config) {
+      return [
+        `a = ${config.lemniscateA.toFixed(1)} + ${config.lemniscateBoost.toFixed(1)}s`,
+        "x(t) = 50 + a cos t / (1 + sin² t)",
+        "y(t) = 50 + a sin t cos t / (1 + sin² t)",
+      ].join("\n");
+    },
     rotate: false,
     particleCount: 70,
     trailSpan: 0.4,
@@ -327,9 +457,9 @@ const curves = [
     rotationDurationMs: 34000,
     pulseDurationMs: 5000,
     strokeWidth: 4.8,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const scale = 20 + detailScale * 7;
+      const scale = config.lemniscateA + detailScale * config.lemniscateBoost;
       const denom = 1 + Math.sin(t) ** 2;
       return {
         x: 50 + (scale * Math.cos(t)) / denom,
@@ -342,11 +472,25 @@ const curves = [
     tag: "Inner Spirograph",
     descriptionEn: "The rolling-circle terms create nested turns and offsets, so the path feels like a compact spirograph traced by a machine.",
     descriptionZh: "滚动圆项会叠出嵌套回环和偏移卷曲，因此整条路径会像机械画出来的紧凑内旋轮线。",
-    formula: [
-      "x(t) = 50 + ((R-r) cos t + d cos((R-r)t/r)) · 3.05",
-      "y(t) = 50 + ((R-r) sin t - d sin((R-r)t/r)) · 3.05",
-      "R = 8.2, r = 2.7 + 0.45s, d = 4.8 + 1.2s",
-    ].join("\n"),
+    spiroR: 8.2,
+    spiror: 2.7,
+    spirorBoost: 0.45,
+    spirod: 4.8,
+    spirodBoost: 1.2,
+    spiroScale: 3.05,
+    controls: [
+      { key: "spiroR", labelEn: "R", labelZh: "R", min: 4, max: 12, step: 0.1 },
+      { key: "spiror", labelEn: "r", labelZh: "r", min: 1, max: 5, step: 0.1 },
+      { key: "spirod", labelEn: "d", labelZh: "d", min: 1, max: 8, step: 0.1 },
+      { key: "spiroScale", labelEn: "Scale", labelZh: "缩放", min: 1.5, max: 4.5, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        `x(t) = 50 + ((R-r) cos t + d cos((R-r)t/r)) · ${config.spiroScale.toFixed(2)}`,
+        `y(t) = 50 + ((R-r) sin t - d sin((R-r)t/r)) · ${config.spiroScale.toFixed(2)}`,
+        `R = ${config.spiroR.toFixed(1)}, r = ${config.spiror.toFixed(1)} + ${config.spirorBoost.toFixed(2)}s, d = ${config.spirod.toFixed(1)} + ${config.spirodBoost.toFixed(1)}s`,
+      ].join("\n");
+    },
     rotate: false,
     particleCount: 82,
     trailSpan: 0.46,
@@ -354,16 +498,15 @@ const curves = [
     rotationDurationMs: 42000,
     pulseDurationMs: 6200,
     strokeWidth: 4.6,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const R = 8.2;
-      const r = 2.7 + detailScale * 0.45;
-      const d = 4.8 + detailScale * 1.2;
-      const x = (R - r) * Math.cos(t) + d * Math.cos(((R - r) / r) * t);
-      const y = (R - r) * Math.sin(t) - d * Math.sin(((R - r) / r) * t);
+      const r = config.spiror + detailScale * config.spirorBoost;
+      const d = config.spirod + detailScale * config.spirodBoost;
+      const x = (config.spiroR - r) * Math.cos(t) + d * Math.cos(((config.spiroR - r) / r) * t);
+      const y = (config.spiroR - r) * Math.sin(t) - d * Math.sin(((config.spiroR - r) / r) * t);
       return {
-        x: 50 + x * 3.05,
-        y: 50 + y * 3.05,
+        x: 50 + x * config.spiroScale,
+        y: 50 + y * config.spiroScale,
       };
     },
   },
@@ -372,12 +515,26 @@ const curves = [
     tag: "R = 3, r = 1, d = 3",
     descriptionEn: "This rolling-circle setup resolves into three large looping petals, all breathing together like a compact spiral flower.",
     descriptionZh: "这组滚动圆参数会展开成 3 个大回环，而且整组圆环会像原版一样统一呼吸，像一朵紧凑的三瓣螺旋花。",
-    formula: [
-      "u(t) = ((R-r) cos t + d cos((R-r)t/r), (R-r) sin t - d sin((R-r)t/r))",
-      "m(t) = 2.2 + 0.45s",
-      "(x, y) = 50 + u(t) · m(t)",
-      "R = 3, r = 1, d = 3",
-    ].join("\n"),
+    spiralR: 3,
+    spiralr: 1,
+    spirald: 3,
+    spiralScale: 2.2,
+    spiralBreath: 0.45,
+    controls: [
+      { key: "spiralR", labelEn: "R", labelZh: "R", min: 2, max: 8, step: 1 },
+      { key: "spiralr", labelEn: "r", labelZh: "r", min: 1, max: 3, step: 0.1 },
+      { key: "spirald", labelEn: "d", labelZh: "d", min: 1, max: 5, step: 0.1 },
+      { key: "spiralScale", labelEn: "Scale", labelZh: "缩放", min: 1.2, max: 3.5, step: 0.05 },
+      { key: "spiralBreath", labelEn: "Pulse", labelZh: "呼吸量", min: 0, max: 1, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        "u(t) = ((R-r) cos t + d cos((R-r)t/r), (R-r) sin t - d sin((R-r)t/r))",
+        `m(t) = ${config.spiralScale.toFixed(2)} + ${config.spiralBreath.toFixed(2)}s`,
+        "(x, y) = 50 + u(t) · m(t)",
+        `R = ${config.spiralR.toFixed(1)}, r = ${config.spiralr.toFixed(1)}, d = ${config.spirald.toFixed(1)}`,
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 82,
     trailSpan: 0.34,
@@ -385,14 +542,12 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4200,
     strokeWidth: 4.4,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const R = 3;
-      const r = 1;
-      const d = 3 + detailScale * 0.25;
-      const baseX = (R - r) * Math.cos(t) + d * Math.cos(((R - r) / r) * t);
-      const baseY = (R - r) * Math.sin(t) - d * Math.sin(((R - r) / r) * t);
-      const scale = 2.2 + detailScale * 0.45;
+      const d = config.spirald + detailScale * 0.25;
+      const baseX = (config.spiralR - config.spiralr) * Math.cos(t) + d * Math.cos(((config.spiralR - config.spiralr) / config.spiralr) * t);
+      const baseY = (config.spiralR - config.spiralr) * Math.sin(t) - d * Math.sin(((config.spiralR - config.spiralr) / config.spiralr) * t);
+      const scale = config.spiralScale + detailScale * config.spiralBreath;
       return {
         x: 50 + baseX * scale,
         y: 50 + baseY * scale,
@@ -404,12 +559,26 @@ const curves = [
     tag: "R = 4, r = 1, d = 3",
     descriptionEn: "With R = 4, the rolling-circle path settles into four looping petals, rotating and breathing as one ring.",
     descriptionZh: "当 R = 4 时，滚动圆路径会稳定成 4 个回环花瓣，并且整组会一起旋转、一起呼吸。",
-    formula: [
-      "u(t) = ((R-r) cos t + d cos((R-r)t/r), (R-r) sin t - d sin((R-r)t/r))",
-      "m(t) = 2.2 + 0.45s",
-      "(x, y) = 50 + u(t) · m(t)",
-      "R = 4, r = 1, d = 3",
-    ].join("\n"),
+    spiralR: 4,
+    spiralr: 1,
+    spirald: 3,
+    spiralScale: 2.2,
+    spiralBreath: 0.45,
+    controls: [
+      { key: "spiralR", labelEn: "R", labelZh: "R", min: 2, max: 8, step: 1 },
+      { key: "spiralr", labelEn: "r", labelZh: "r", min: 1, max: 3, step: 0.1 },
+      { key: "spirald", labelEn: "d", labelZh: "d", min: 1, max: 5, step: 0.1 },
+      { key: "spiralScale", labelEn: "Scale", labelZh: "缩放", min: 1.2, max: 3.5, step: 0.05 },
+      { key: "spiralBreath", labelEn: "Pulse", labelZh: "呼吸量", min: 0, max: 1, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        "u(t) = ((R-r) cos t + d cos((R-r)t/r), (R-r) sin t - d sin((R-r)t/r))",
+        `m(t) = ${config.spiralScale.toFixed(2)} + ${config.spiralBreath.toFixed(2)}s`,
+        "(x, y) = 50 + u(t) · m(t)",
+        `R = ${config.spiralR.toFixed(1)}, r = ${config.spiralr.toFixed(1)}, d = ${config.spirald.toFixed(1)}`,
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 84,
     trailSpan: 0.34,
@@ -417,14 +586,12 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4200,
     strokeWidth: 4.4,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const R = 4;
-      const r = 1;
-      const d = 3 + detailScale * 0.25;
-      const baseX = (R - r) * Math.cos(t) + d * Math.cos(((R - r) / r) * t);
-      const baseY = (R - r) * Math.sin(t) - d * Math.sin(((R - r) / r) * t);
-      const scale = 2.2 + detailScale * 0.45;
+      const d = config.spirald + detailScale * 0.25;
+      const baseX = (config.spiralR - config.spiralr) * Math.cos(t) + d * Math.cos(((config.spiralR - config.spiralr) / config.spiralr) * t);
+      const baseY = (config.spiralR - config.spiralr) * Math.sin(t) - d * Math.sin(((config.spiralR - config.spiralr) / config.spiralr) * t);
+      const scale = config.spiralScale + detailScale * config.spiralBreath;
       return {
         x: 50 + baseX * scale,
         y: 50 + baseY * scale,
@@ -436,12 +603,26 @@ const curves = [
     tag: "R = 5, r = 1, d = 3",
     descriptionEn: "With R = 5, the loop count increases to five petals, giving the spiral flower a denser and more ornate rhythm.",
     descriptionZh: "当 R = 5 时，回环数量会变成 5 个花瓣，整朵螺旋花会显得更密、更华丽。",
-    formula: [
-      "u(t) = ((R-r) cos t + d cos((R-r)t/r), (R-r) sin t - d sin((R-r)t/r))",
-      "m(t) = 2.2 + 0.45s",
-      "(x, y) = 50 + u(t) · m(t)",
-      "R = 5, r = 1, d = 3",
-    ].join("\n"),
+    spiralR: 5,
+    spiralr: 1,
+    spirald: 3,
+    spiralScale: 2.2,
+    spiralBreath: 0.45,
+    controls: [
+      { key: "spiralR", labelEn: "R", labelZh: "R", min: 2, max: 8, step: 1 },
+      { key: "spiralr", labelEn: "r", labelZh: "r", min: 1, max: 3, step: 0.1 },
+      { key: "spirald", labelEn: "d", labelZh: "d", min: 1, max: 5, step: 0.1 },
+      { key: "spiralScale", labelEn: "Scale", labelZh: "缩放", min: 1.2, max: 3.5, step: 0.05 },
+      { key: "spiralBreath", labelEn: "Pulse", labelZh: "呼吸量", min: 0, max: 1, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        "u(t) = ((R-r) cos t + d cos((R-r)t/r), (R-r) sin t - d sin((R-r)t/r))",
+        `m(t) = ${config.spiralScale.toFixed(2)} + ${config.spiralBreath.toFixed(2)}s`,
+        "(x, y) = 50 + u(t) · m(t)",
+        `R = ${config.spiralR.toFixed(1)}, r = ${config.spiralr.toFixed(1)}, d = ${config.spirald.toFixed(1)}`,
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 85,
     trailSpan: 0.34,
@@ -449,14 +630,12 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4200,
     strokeWidth: 4.4,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const R = 5;
-      const r = 1;
-      const d = 3 + detailScale * 0.25;
-      const baseX = (R - r) * Math.cos(t) + d * Math.cos(((R - r) / r) * t);
-      const baseY = (R - r) * Math.sin(t) - d * Math.sin(((R - r) / r) * t);
-      const scale = 2.2 + detailScale * 0.45;
+      const d = config.spirald + detailScale * 0.25;
+      const baseX = (config.spiralR - config.spiralr) * Math.cos(t) + d * Math.cos(((config.spiralR - config.spiralr) / config.spiralr) * t);
+      const baseY = (config.spiralR - config.spiralr) * Math.sin(t) - d * Math.sin(((config.spiralR - config.spiralr) / config.spiralr) * t);
+      const scale = config.spiralScale + detailScale * config.spiralBreath;
       return {
         x: 50 + baseX * scale,
         y: 50 + baseY * scale,
@@ -468,12 +647,26 @@ const curves = [
     tag: "R = 6, r = 1, d = 3",
     descriptionEn: "The rolling-circle path splits into six petals, and the whole ring breathes in one unified pulse like the original loader.",
     descriptionZh: "滚动圆路径会展开成六个花瓣，而且整组圆环会像原版一样以统一节奏一起呼吸缩放。",
-    formula: [
-      "u(t) = ((R-r) cos t + d cos((R-r)t/r), (R-r) sin t - d sin((R-r)t/r))",
-      "m(t) = 2.2 + 0.45s",
-      "(x, y) = 50 + u(t) · m(t)",
-      "R = 6, r = 1, d = 3",
-    ].join("\n"),
+    spiralR: 6,
+    spiralr: 1,
+    spirald: 3,
+    spiralScale: 2.2,
+    spiralBreath: 0.45,
+    controls: [
+      { key: "spiralR", labelEn: "R", labelZh: "R", min: 2, max: 8, step: 1 },
+      { key: "spiralr", labelEn: "r", labelZh: "r", min: 1, max: 3, step: 0.1 },
+      { key: "spirald", labelEn: "d", labelZh: "d", min: 1, max: 5, step: 0.1 },
+      { key: "spiralScale", labelEn: "Scale", labelZh: "缩放", min: 1.2, max: 3.5, step: 0.05 },
+      { key: "spiralBreath", labelEn: "Pulse", labelZh: "呼吸量", min: 0, max: 1, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        "u(t) = ((R-r) cos t + d cos((R-r)t/r), (R-r) sin t - d sin((R-r)t/r))",
+        `m(t) = ${config.spiralScale.toFixed(2)} + ${config.spiralBreath.toFixed(2)}s`,
+        "(x, y) = 50 + u(t) · m(t)",
+        `R = ${config.spiralR.toFixed(1)}, r = ${config.spiralr.toFixed(1)}, d = ${config.spirald.toFixed(1)}`,
+      ].join("\n");
+    },
     rotate: true,
     particleCount: 86,
     trailSpan: 0.34,
@@ -481,14 +674,12 @@ const curves = [
     rotationDurationMs: 28000,
     pulseDurationMs: 4200,
     strokeWidth: 4.4,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const R = 6;
-      const r = 1;
-      const d = 3 + detailScale * 0.25;
-      const baseX = (R - r) * Math.cos(t) + d * Math.cos(((R - r) / r) * t);
-      const baseY = (R - r) * Math.sin(t) - d * Math.sin(((R - r) / r) * t);
-      const scale = 2.2 + detailScale * 0.45;
+      const d = config.spirald + detailScale * 0.25;
+      const baseX = (config.spiralR - config.spiralr) * Math.cos(t) + d * Math.cos(((config.spiralR - config.spiralr) / config.spiralr) * t);
+      const baseY = (config.spiralR - config.spiralr) * Math.sin(t) - d * Math.sin(((config.spiralR - config.spiralr) / config.spiralr) * t);
+      const scale = config.spiralScale + detailScale * config.spiralBreath;
       return {
         x: 50 + baseX * scale,
         y: 50 + baseY * scale,
@@ -500,12 +691,26 @@ const curves = [
     tag: "Butterfly Curve",
     descriptionEn: "Exponential and high-frequency cosine terms stretch the wings unevenly, giving the path its unmistakably fluttering butterfly shape.",
     descriptionZh: "指数项和高频余弦会把两侧翅膀不均匀地拉开，所以整条轨迹会像蝴蝶一样拍动。",
-    formula: [
-      "u = 12t",
-      "B(u) = e^{cos u} - 2 cos 4u - sin^5(u/12)",
-      "x(t) = 50 + sin u · B(u) · (4.6 + 0.45s)",
-      "y(t) = 50 + cos u · B(u) · (4.6 + 0.45s)",
-    ].join("\n"),
+    butterflyTurns: 12,
+    butterflyScale: 4.6,
+    butterflyPulse: 0.45,
+    butterflyCosWeight: 2,
+    butterflyPower: 5,
+    controls: [
+      { key: "butterflyTurns", labelEn: "Turns", labelZh: "圈数", min: 6, max: 18, step: 0.5 },
+      { key: "butterflyScale", labelEn: "Scale", labelZh: "缩放", min: 2.5, max: 7, step: 0.05 },
+      { key: "butterflyPulse", labelEn: "Pulse", labelZh: "呼吸量", min: 0, max: 1.2, step: 0.01 },
+      { key: "butterflyCosWeight", labelEn: "Cos weight", labelZh: "余弦权重", min: 0.5, max: 4, step: 0.05 },
+      { key: "butterflyPower", labelEn: "Power", labelZh: "幂次", min: 2, max: 8, step: 1 },
+    ],
+    formula(config) {
+      return [
+        `u = ${config.butterflyTurns.toFixed(1)}t`,
+        `B(u) = e^{cos u} - ${config.butterflyCosWeight.toFixed(2)} cos 4u - sin^${Math.round(config.butterflyPower)}(u/12)`,
+        `x(t) = 50 + sin u · B(u) · (${config.butterflyScale.toFixed(2)} + ${config.butterflyPulse.toFixed(2)}s)`,
+        `y(t) = 50 + cos u · B(u) · (${config.butterflyScale.toFixed(2)} + ${config.butterflyPulse.toFixed(2)}s)`,
+      ].join("\n");
+    },
     rotate: false,
     particleCount: 88,
     trailSpan: 0.32,
@@ -513,13 +718,13 @@ const curves = [
     rotationDurationMs: 50000,
     pulseDurationMs: 7000,
     strokeWidth: 4.4,
-    point(progress, detailScale) {
-      const t = progress * Math.PI * 12;
+    point(progress, detailScale, config) {
+      const t = progress * Math.PI * config.butterflyTurns;
       const s =
         Math.exp(Math.cos(t)) -
-        2 * Math.cos(4 * t) -
-        Math.sin(t / 12) ** 5;
-      const scale = 4.6 + detailScale * 0.45;
+        config.butterflyCosWeight * Math.cos(4 * t) -
+        Math.sin(t / 12) ** Math.round(config.butterflyPower);
+      const scale = config.butterflyScale + detailScale * config.butterflyPulse;
       return {
         x: 50 + Math.sin(t) * s * scale,
         y: 50 + Math.cos(t) * s * scale,
@@ -531,12 +736,22 @@ const curves = [
     tag: "Cardioid",
     descriptionEn: "Because r = a(1 - cos t) collapses to zero at one side and swells on the other, the curve reads like a soft pulsing heart wave.",
     descriptionZh: "由于 r = a(1 - cos t) 会在一侧收成尖点、另一侧鼓起，所以这条曲线会像温和起伏的心形脉冲。",
-    formula: [
-      "a = 8.4 + 0.8s",
-      "r(t) = a(1 - cos t)",
-      "x(t) = 50 + cos t · r(t) · 2.15",
-      "y(t) = 50 + sin t · r(t) · 2.15",
-    ].join("\n"),
+    cardioidA: 8.4,
+    cardioidPulse: 0.8,
+    cardioidScale: 2.15,
+    controls: [
+      { key: "cardioidA", labelEn: "a", labelZh: "a", min: 4, max: 14, step: 0.1 },
+      { key: "cardioidPulse", labelEn: "Pulse", labelZh: "呼吸量", min: 0, max: 2, step: 0.05 },
+      { key: "cardioidScale", labelEn: "Scale", labelZh: "缩放", min: 1, max: 3.5, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        `a = ${config.cardioidA.toFixed(1)} + ${config.cardioidPulse.toFixed(2)}s`,
+        "r(t) = a(1 - cos t)",
+        `x(t) = 50 + cos t · r(t) · ${config.cardioidScale.toFixed(2)}`,
+        `y(t) = 50 + sin t · r(t) · ${config.cardioidScale.toFixed(2)}`,
+      ].join("\n");
+    },
     rotate: false,
     particleCount: 72,
     trailSpan: 0.36,
@@ -544,13 +759,13 @@ const curves = [
     rotationDurationMs: 36000,
     pulseDurationMs: 5200,
     strokeWidth: 4.9,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const a = 8.4 + detailScale * 0.8;
+      const a = config.cardioidA + detailScale * config.cardioidPulse;
       const r = a * (1 - Math.cos(t));
       return {
-        x: 50 + Math.cos(t) * r * 2.15,
-        y: 50 + Math.sin(t) * r * 2.15,
+        x: 50 + Math.cos(t) * r * config.cardioidScale,
+        y: 50 + Math.sin(t) * r * config.cardioidScale,
       };
     },
   },
@@ -559,12 +774,22 @@ const curves = [
     tag: "r = a(1 + cosθ)",
     descriptionEn: "Starting from r = a(1 + cos t) and rotating the coordinates turns the textbook cardioid into a more legible upright heart.",
     descriptionZh: "从 r = a(1 + cos t) 出发，再把坐标整体旋转后，标准心形线就会变成更直观的竖向爱心。",
-    formula: [
-      "r(t) = a(1 + cos t)",
-      "a = 8.8 + 0.8s",
-      "x'(t) = -sin t · r(t)",
-      "y'(t) = -cos t · r(t)",
-    ].join("\n"),
+    cardioidA: 8.8,
+    cardioidPulse: 0.8,
+    cardioidScale: 2.15,
+    controls: [
+      { key: "cardioidA", labelEn: "a", labelZh: "a", min: 4, max: 14, step: 0.1 },
+      { key: "cardioidPulse", labelEn: "Pulse", labelZh: "呼吸量", min: 0, max: 2, step: 0.05 },
+      { key: "cardioidScale", labelEn: "Scale", labelZh: "缩放", min: 1, max: 3.5, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        `a = ${config.cardioidA.toFixed(1)} + ${config.cardioidPulse.toFixed(2)}s`,
+        "r(t) = a(1 + cos t)",
+        "x'(t) = -sin t · r(t)",
+        `y'(t) = -cos t · r(t), m = ${config.cardioidScale.toFixed(2)}`,
+      ].join("\n");
+    },
     rotate: false,
     particleCount: 74,
     trailSpan: 0.36,
@@ -572,15 +797,15 @@ const curves = [
     rotationDurationMs: 36000,
     pulseDurationMs: 5200,
     strokeWidth: 4.9,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const a = 8.8 + detailScale * 0.8;
+      const a = config.cardioidA + detailScale * config.cardioidPulse;
       const r = a * (1 + Math.cos(t));
       const baseX = Math.cos(t) * r;
       const baseY = Math.sin(t) * r;
       return {
-        x: 50 - baseY * 2.15,
-        y: 50 - baseX * 2.15,
+        x: 50 - baseY * config.cardioidScale,
+        y: 50 - baseX * config.cardioidScale,
       };
     },
   },
@@ -589,11 +814,25 @@ const curves = [
     tag: "f(x) Heart Wave",
     descriptionEn: "The x^(2/3) envelope supplies the heart outline, while sin(bπx) fills its interior with adjustable horizontal ripples.",
     descriptionZh: "x^(2/3) 负责给出爱心外轮廓，sin(bπx) 则把可调密度的横向波纹填进心形内部。",
-    formula: [
-      "f(x) = x^(2/3) + 0.9√(3.3 - x²) sin(bπx)",
-      "screenY ∝ 1.75 - f(x)",
-      "b controls the ripple density inside the heart",
-    ].join("\n"),
+    heartWaveB: 6.4,
+    heartWaveRoot: 3.3,
+    heartWaveAmp: 0.9,
+    heartWaveScaleX: 23.2,
+    heartWaveScaleY: 24.5,
+    controls: [
+      { key: "heartWaveB", labelEn: "b", labelZh: "b", min: 2, max: 12, step: 0.1 },
+      { key: "heartWaveRoot", labelEn: "Root span", labelZh: "根号范围", min: 2.2, max: 4.2, step: 0.05 },
+      { key: "heartWaveAmp", labelEn: "Wave amp", labelZh: "波纹振幅", min: 0.3, max: 1.6, step: 0.05 },
+      { key: "heartWaveScaleX", labelEn: "X scale", labelZh: "X 缩放", min: 14, max: 30, step: 0.1 },
+      { key: "heartWaveScaleY", labelEn: "Y scale", labelZh: "Y 缩放", min: 14, max: 34, step: 0.1 },
+    ],
+    formula(config) {
+      return [
+        `f(x) = |x|^(2/3) + ${config.heartWaveAmp.toFixed(2)}√(${config.heartWaveRoot.toFixed(2)} - x²) sin(${config.heartWaveB.toFixed(1)}πx)`,
+        `screenX = 50 + x · ${config.heartWaveScaleX.toFixed(1)}`,
+        `screenY = 18 + (1.75 - f(x))(${config.heartWaveScaleY.toFixed(1)} + 1.5s)`,
+      ].join("\n");
+    },
     rotate: false,
     particleCount: 104,
     trailSpan: 0.18,
@@ -601,20 +840,16 @@ const curves = [
     rotationDurationMs: 22000,
     pulseDurationMs: 5600,
     strokeWidth: 3.9,
-    heartWaveB: 6.4,
-    controls: [
-      { key: "heartWaveB", labelEn: "b", labelZh: "b", min: 2, max: 12, step: 0.1 },
-    ],
     point(progress, detailScale, config) {
-      const xLimit = Math.sqrt(3.3);
+      const xLimit = Math.sqrt(config.heartWaveRoot);
       const x = -xLimit + progress * xLimit * 2;
-      const safeRoot = Math.max(0, 3.3 - x * x);
+      const safeRoot = Math.max(0, config.heartWaveRoot - x * x);
       const b = config.heartWaveB;
-      const wave = 0.9 * Math.sqrt(safeRoot) * Math.sin(b * Math.PI * x);
+      const wave = config.heartWaveAmp * Math.sqrt(safeRoot) * Math.sin(b * Math.PI * x);
       const curve = Math.pow(Math.abs(x), 2 / 3);
       const y = curve + wave;
-      const scaleX = 23.2;
-      const scaleY = 24.5 + detailScale * 1.5;
+      const scaleX = config.heartWaveScaleX;
+      const scaleY = config.heartWaveScaleY + detailScale * 1.5;
 
       return {
         x: 50 + x * scaleX,
@@ -627,12 +862,26 @@ const curves = [
     tag: "Archimedean Spiral",
     descriptionEn: "A fast-growing angle combined with a cosine-modulated radius creates a spiral that opens out and closes cleanly back into itself.",
     descriptionZh: "快速增长的角度配合被余弦调制的半径，会形成向外展开又能平顺闭合的螺旋轨迹。",
-    formula: [
-      "θ(t) = 4t",
-      "r(t) = 8 + (1 - cos t)(8.5 + 2.4s)",
-      "x(t) = 50 + cos θ · r(t)",
-      "y(t) = 50 + sin θ · r(t)",
-    ].join("\n"),
+    searchTurns: 4,
+    searchBaseRadius: 8,
+    searchRadiusAmp: 8.5,
+    searchPulse: 2.4,
+    searchScale: 1,
+    controls: [
+      { key: "searchTurns", labelEn: "Turns", labelZh: "圈数", min: 2, max: 8, step: 0.1 },
+      { key: "searchBaseRadius", labelEn: "Base radius", labelZh: "基础半径", min: 2, max: 16, step: 0.1 },
+      { key: "searchRadiusAmp", labelEn: "Radius amp", labelZh: "半径振幅", min: 2, max: 16, step: 0.1 },
+      { key: "searchPulse", labelEn: "Pulse", labelZh: "呼吸量", min: 0, max: 6, step: 0.1 },
+      { key: "searchScale", labelEn: "Scale", labelZh: "缩放", min: 0.5, max: 1.8, step: 0.05 },
+    ],
+    formula(config) {
+      return [
+        `θ(t) = ${config.searchTurns.toFixed(1)}t`,
+        `r(t) = ${config.searchBaseRadius.toFixed(1)} + (1 - cos t)(${config.searchRadiusAmp.toFixed(1)} + ${config.searchPulse.toFixed(1)}s)`,
+        `x(t) = 50 + cos θ · r(t) · ${config.searchScale.toFixed(2)}`,
+        `y(t) = 50 + sin θ · r(t) · ${config.searchScale.toFixed(2)}`,
+      ].join("\n");
+    },
     rotate: false,
     particleCount: 86,
     trailSpan: 0.28,
@@ -640,13 +889,15 @@ const curves = [
     rotationDurationMs: 44000,
     pulseDurationMs: 6800,
     strokeWidth: 4.3,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const angle = t * 4;
-      const radius = 8 + (1 - Math.cos(t)) * (8.5 + detailScale * 2.4);
+      const angle = t * config.searchTurns;
+      const radius =
+        config.searchBaseRadius +
+        (1 - Math.cos(t)) * (config.searchRadiusAmp + detailScale * config.searchPulse);
       return {
-        x: 50 + Math.cos(angle) * radius,
-        y: 50 + Math.sin(angle) * radius,
+        x: 50 + Math.cos(angle) * radius * config.searchScale,
+        y: 50 + Math.sin(angle) * radius * config.searchScale,
       };
     },
   },
@@ -655,11 +906,30 @@ const curves = [
     tag: "Fourier Curve",
     descriptionEn: "Several sine and cosine components interfere with one another, so the shape keeps mutating like a living waveform.",
     descriptionZh: "多组正弦和余弦彼此干涉后，轮廓会持续变形，看起来像一条有生命的信号波。",
-    formula: [
-      "x(t) = 50 + 17 cos t + 7.5 cos(3t + 0.6m) + 3.2 sin(5t - 0.4)",
-      "y(t) = 50 + 15 sin t + 8.2 sin(2t + 0.25) - 4.2 cos(4t - 0.5m)",
-      "m = 1 + 0.16s",
-    ].join("\n"),
+    fourierX1: 17,
+    fourierX3: 7.5,
+    fourierX5: 3.2,
+    fourierY1: 15,
+    fourierY2: 8.2,
+    fourierY4: 4.2,
+    fourierMixBase: 1,
+    fourierMixPulse: 0.16,
+    controls: [
+      { key: "fourierX1", labelEn: "x cos1", labelZh: "x 一阶", min: 4, max: 24, step: 0.1 },
+      { key: "fourierX3", labelEn: "x cos3", labelZh: "x 三阶", min: 0, max: 14, step: 0.1 },
+      { key: "fourierX5", labelEn: "x sin5", labelZh: "x 五阶", min: 0, max: 10, step: 0.1 },
+      { key: "fourierY1", labelEn: "y sin1", labelZh: "y 一阶", min: 4, max: 24, step: 0.1 },
+      { key: "fourierY2", labelEn: "y sin2", labelZh: "y 二阶", min: 0, max: 14, step: 0.1 },
+      { key: "fourierY4", labelEn: "y cos4", labelZh: "y 四阶", min: 0, max: 10, step: 0.1 },
+      { key: "fourierMixPulse", labelEn: "Mix pulse", labelZh: "混合呼吸", min: 0, max: 0.8, step: 0.01 },
+    ],
+    formula(config) {
+      return [
+        `x(t) = 50 + ${config.fourierX1.toFixed(1)} cos t + ${config.fourierX3.toFixed(1)} cos(3t + 0.6m) + ${config.fourierX5.toFixed(1)} sin(5t - 0.4)`,
+        `y(t) = 50 + ${config.fourierY1.toFixed(1)} sin t + ${config.fourierY2.toFixed(1)} sin(2t + 0.25) - ${config.fourierY4.toFixed(1)} cos(4t - 0.5m)`,
+        `m = ${config.fourierMixBase.toFixed(2)} + ${config.fourierMixPulse.toFixed(2)}s`,
+      ].join("\n");
+    },
     rotate: false,
     particleCount: 92,
     trailSpan: 0.31,
@@ -667,17 +937,17 @@ const curves = [
     rotationDurationMs: 44000,
     pulseDurationMs: 6800,
     strokeWidth: 4.2,
-    point(progress, detailScale) {
+    point(progress, detailScale, config) {
       const t = progress * Math.PI * 2;
-      const mix = 1 + detailScale * 0.16;
+      const mix = config.fourierMixBase + detailScale * config.fourierMixPulse;
       const x =
-        17 * Math.cos(t) +
-        7.5 * Math.cos(3 * t + 0.6 * mix) +
-        3.2 * Math.sin(5 * t - 0.4);
+        config.fourierX1 * Math.cos(t) +
+        config.fourierX3 * Math.cos(3 * t + 0.6 * mix) +
+        config.fourierX5 * Math.sin(5 * t - 0.4);
       const y =
-        15 * Math.sin(t) +
-        8.2 * Math.sin(2 * t + 0.25) -
-        4.2 * Math.cos(4 * t - 0.5 * mix);
+        config.fourierY1 * Math.sin(t) +
+        config.fourierY2 * Math.sin(2 * t + 0.25) -
+        config.fourierY4 * Math.cos(4 * t - 0.5 * mix);
       return {
         x: 50 + x,
         y: 50 + y,
@@ -843,7 +1113,11 @@ function formatControlValue(key, value) {
     return `${(value / 1000).toFixed(1)}s`;
   }
 
-  if (key === "trailSpan" || key === "strokeWidth") {
+  if (
+    key === "trailSpan" ||
+    key === "strokeWidth" ||
+    !Number.isInteger(value)
+  ) {
     return Number(value).toFixed(2);
   }
 
@@ -886,8 +1160,16 @@ function renderControls(config) {
   });
 }
 
+function formatFormula(config) {
+  if (typeof config.formula === "function") {
+    return config.formula(config);
+  }
+
+  return config.formula;
+}
+
 function syncViewerMeta(config) {
-  viewerFormula.textContent = config.formula;
+  viewerFormula.textContent = formatFormula(config);
   viewerCode.textContent = formatCurveCode(config);
   viewerPath.setAttribute("stroke-width", String(config.strokeWidth));
   renderControls(config);
@@ -1005,7 +1287,7 @@ viewerCopy.addEventListener("click", async () => {
     `${activeViewerConfig.name}`,
     "",
     "Formula",
-    activeViewerConfig.formula,
+    formatFormula(activeViewerConfig),
     "",
     "Code",
     formatCurveCode(activeViewerConfig),
@@ -1072,6 +1354,7 @@ viewerControls.addEventListener("input", (event) => {
     valueEl.textContent = formatControlValue(key, nextValue);
   }
 
+  viewerFormula.textContent = formatFormula(activeViewerConfig);
   viewerCode.textContent = formatCurveCode(activeViewerConfig);
   viewerPath.setAttribute("stroke-width", String(activeViewerConfig.strokeWidth));
 });
