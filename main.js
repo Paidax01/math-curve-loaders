@@ -12,6 +12,7 @@ const viewerControls = document.querySelector("#viewer-controls");
 const viewerFormula = document.querySelector("#viewer-formula");
 const viewerCode = document.querySelector("#viewer-code code");
 const viewerCopy = document.querySelector("#viewer-copy");
+const viewerDownload = document.querySelector("#viewer-download");
 const viewerClose = document.querySelector("#viewer-close");
 const viewerReset = document.querySelector("#viewer-reset");
 const langEnButton = document.querySelector("#lang-en");
@@ -32,6 +33,9 @@ const UI_TEXT = {
     controls: "Controls",
     formula: "Formula",
     code: "Code",
+    download: "Download",
+    downloaded: "Downloaded",
+    downloadFailed: "Failed",
     reset: "Reset",
     copy: "Copy",
     copied: "Copied",
@@ -46,6 +50,9 @@ const UI_TEXT = {
     controls: "配置项",
     formula: "公式",
     code: "代码",
+    download: "下载",
+    downloaded: "已下载",
+    downloadFailed: "下载失败",
     reset: "重置",
     copy: "复制",
     copied: "已复制",
@@ -1025,6 +1032,7 @@ function applyLanguage() {
   viewerControlsLabel.textContent = ui.controls;
   viewerFormulaLabel.textContent = ui.formula;
   viewerCodeLabel.textContent = ui.code;
+  viewerDownload.textContent = ui.download;
   viewerReset.textContent = ui.reset;
   viewerCopy.textContent = ui.copy;
   viewerClose.textContent = ui.close;
@@ -1175,25 +1183,214 @@ function syncViewerMeta(config) {
   renderControls(config);
 }
 
-function formatCurveCode(config) {
-  const pointSource = config.point.toString().replace(/^point/, "function point");
-  const controls = config.controls ?? [];
-  const customLines = controls.map((control) => `  ${control.key}: ${config[control.key]},`);
+function serializeCurveValue(value) {
+  return JSON.stringify(value);
+}
+
+function formatCurveRuntimeObject(config) {
+  const formulaSource =
+    typeof config.formula === "function"
+      ? config.formula.toString()
+      : `formula: () => ${serializeCurveValue(config.formula)}`;
+  const pointSource = config.point.toString();
+  const orderedKeys = [
+    "name",
+    "tag",
+    "rotate",
+    "particleCount",
+    "trailSpan",
+    "durationMs",
+    "rotationDurationMs",
+    "pulseDurationMs",
+    "strokeWidth",
+  ];
+  const skipKeys = new Set([
+    ...orderedKeys,
+    "descriptionEn",
+    "descriptionZh",
+    "controls",
+    "formula",
+    "point",
+  ]);
+  const dynamicKeys = Object.keys(config).filter((key) => !skipKeys.has(key));
+  const scalarKeys = [...orderedKeys, ...dynamicKeys].filter((key) => key in config);
+  const scalarLines = scalarKeys.map((key) => `  ${key}: ${serializeCurveValue(config[key])},`);
+
   return [
-    `const curve = {`,
-    `  name: "${config.name}",`,
-    `  tag: "${config.tag}",`,
-    `  rotate: ${config.rotate},`,
-    `  particleCount: ${config.particleCount},`,
-    `  trailSpan: ${config.trailSpan},`,
-    `  durationMs: ${config.durationMs},`,
-    `  rotationDurationMs: ${config.rotationDurationMs},`,
-    `  pulseDurationMs: ${config.pulseDurationMs},`,
-    `  strokeWidth: ${config.strokeWidth},`,
-    ...customLines,
+    `const config = {`,
+    ...scalarLines,
+    typeof config.formula === "function"
+      ? `  ${formulaSource},`
+      : `  ${formulaSource},`,
+    `  ${pointSource},`,
     `};`,
-    ``,
-    pointSource,
+  ].join("\n");
+}
+
+function formatCurveCode(config) {
+  const runtimeObject = formatCurveRuntimeObject(config);
+
+  return [
+    "<!doctype html>",
+    '<html lang="en">',
+    "<head>",
+    '  <meta charset="utf-8" />',
+    '  <meta name="viewport" content="width=device-width, initial-scale=1" />',
+    `  <title>${config.name}</title>`,
+    "  <style>",
+    "    :root { color-scheme: dark; }",
+    "    * { box-sizing: border-box; }",
+    "    body {",
+    "      margin: 0;",
+    "      min-height: 100vh;",
+    "      display: grid;",
+    "      place-items: center;",
+    "      background: #050505;",
+    "      color: #f5f5f5;",
+    "      font-family: Inter, system-ui, sans-serif;",
+    "    }",
+    "    .demo {",
+    "      display: grid;",
+    "      gap: 20px;",
+    "      justify-items: center;",
+    "      padding: 32px;",
+    "    }",
+    "    .frame {",
+    "      width: min(72vmin, 420px);",
+    "      aspect-ratio: 1;",
+    "      display: grid;",
+    "      place-items: center;",
+    "    }",
+    "    svg {",
+    "      width: 100%;",
+    "      height: 100%;",
+    "      overflow: visible;",
+    "    }",
+    "    .meta {",
+    "      display: grid;",
+    "      gap: 6px;",
+    "      text-align: center;",
+    "    }",
+    "    .title {",
+    "      font-size: 22px;",
+    "      font-weight: 700;",
+    "    }",
+    "    .tag {",
+    "      font-size: 13px;",
+    "      letter-spacing: 0.18em;",
+    "      text-transform: uppercase;",
+    "      color: rgba(255,255,255,0.58);",
+    "    }",
+    "    .formula {",
+      "      max-width: min(92vw, 720px);",
+      "      padding: 14px 16px;",
+      "      border: 1px solid rgba(255,255,255,0.1);",
+      "      border-radius: 14px;",
+      "      background: rgba(255,255,255,0.03);",
+      "      color: rgba(255,255,255,0.82);",
+      "      font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;",
+      "      white-space: pre-wrap;",
+    "    }",
+    "    .back-link {",
+    "      display: inline-flex;",
+    "      align-items: center;",
+    "      justify-content: center;",
+    "      padding: 10px 16px;",
+    "      border-radius: 999px;",
+    "      border: 1px solid rgba(255,255,255,0.14);",
+    "      background: rgba(255,255,255,0.04);",
+    "      color: #fff;",
+    "      text-decoration: none;",
+    "      font-size: 13px;",
+    "      line-height: 1;",
+    "      transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;",
+    "    }",
+    "    .back-link:hover {",
+    "      background: rgba(255,255,255,0.08);",
+    "      border-color: rgba(255,255,255,0.22);",
+    "      transform: translateY(-1px);",
+    "    }",
+    "  </style>",
+    "</head>",
+    "<body>",
+    '  <div class="demo">',
+    '    <div class="frame">',
+    '      <svg viewBox="0 0 100 100" fill="none" aria-hidden="true">',
+    '        <g id="group">',
+    '          <path id="path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" opacity="0.1"></path>',
+    "        </g>",
+    "      </svg>",
+    "    </div>",
+    '    <div class="meta">',
+    `      <div class="title">${config.name}</div>`,
+    `      <div class="tag">${config.tag}</div>`,
+    "    </div>",
+    '    <pre class="formula" id="formula"></pre>',
+    '    <a class="back-link" href="https://paidax01.github.io/math-curve-loaders/" target="_blank" rel="noreferrer">View All</a>',
+    "  </div>",
+    "  <script>",
+    "    const SVG_NS = 'http://www.w3.org/2000/svg';",
+    `    ${runtimeObject}`,
+    "    const group = document.querySelector('#group');",
+    "    const path = document.querySelector('#path');",
+    "    const formula = document.querySelector('#formula');",
+    "    path.setAttribute('stroke-width', String(config.strokeWidth));",
+    "    formula.textContent = typeof config.formula === 'function' ? config.formula(config) : config.formula;",
+    "    const particles = Array.from({ length: config.particleCount }, () => {",
+    "      const circle = document.createElementNS(SVG_NS, 'circle');",
+    "      circle.setAttribute('fill', 'currentColor');",
+    "      group.appendChild(circle);",
+    "      return circle;",
+    "    });",
+    "    function normalizeProgress(progress) {",
+    "      return ((progress % 1) + 1) % 1;",
+    "    }",
+    "    function getDetailScale(time) {",
+    "      const pulseProgress = (time % config.pulseDurationMs) / config.pulseDurationMs;",
+    "      const pulseAngle = pulseProgress * Math.PI * 2;",
+    "      return 0.52 + ((Math.sin(pulseAngle + 0.55) + 1) / 2) * 0.48;",
+    "    }",
+    "    function getRotation(time) {",
+    "      if (!config.rotate) return 0;",
+    "      return -((time % config.rotationDurationMs) / config.rotationDurationMs) * 360;",
+    "    }",
+    "    function buildPath(detailScale, steps = 480) {",
+    "      return Array.from({ length: steps + 1 }, (_, index) => {",
+    "        const point = config.point(index / steps, detailScale, config);",
+    "        return `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`;",
+    "      }).join(' ');",
+    "    }",
+    "    function getParticle(index, progress, detailScale) {",
+    "      const tailOffset = index / (config.particleCount - 1);",
+    "      const point = config.point(normalizeProgress(progress - tailOffset * config.trailSpan), detailScale, config);",
+    "      const fade = Math.pow(1 - tailOffset, 0.56);",
+    "      return {",
+    "        x: point.x,",
+    "        y: point.y,",
+    "        radius: 0.9 + fade * 2.7,",
+    "        opacity: 0.04 + fade * 0.96,",
+    "      };",
+    "    }",
+    "    const startedAt = performance.now();",
+    "    function render(now) {",
+    "      const time = now - startedAt;",
+    "      const progress = (time % config.durationMs) / config.durationMs;",
+    "      const detailScale = getDetailScale(time);",
+    "      group.setAttribute('transform', `rotate(${getRotation(time)} 50 50)`);",
+    "      path.setAttribute('d', buildPath(detailScale));",
+    "      particles.forEach((node, index) => {",
+    "        const particle = getParticle(index, progress, detailScale);",
+    "        node.setAttribute('cx', particle.x.toFixed(2));",
+    "        node.setAttribute('cy', particle.y.toFixed(2));",
+    "        node.setAttribute('r', particle.radius.toFixed(2));",
+    "        node.setAttribute('opacity', particle.opacity.toFixed(3));",
+    "      });",
+    "      requestAnimationFrame(render);",
+    "    }",
+    "    requestAnimationFrame(render);",
+    "  </script>",
+    "</body>",
+    "</html>",
   ].join("\n");
 }
 
@@ -1303,6 +1500,40 @@ viewerCopy.addEventListener("click", async () => {
     viewerCopy.textContent = UI_TEXT[currentLanguage].copyFailed;
     window.setTimeout(() => {
       viewerCopy.textContent = UI_TEXT[currentLanguage].copy;
+    }, 1400);
+  }
+});
+
+viewerDownload.addEventListener("click", () => {
+  if (!activeViewerConfig) {
+    return;
+  }
+
+  try {
+    const html = formatCurveCode(activeViewerConfig);
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    const slug = activeViewerConfig.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    anchor.href = url;
+    anchor.download = `${slug || "curve-demo"}.html`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+
+    viewerDownload.textContent = UI_TEXT[currentLanguage].downloaded;
+    window.setTimeout(() => {
+      viewerDownload.textContent = UI_TEXT[currentLanguage].download;
+    }, 1400);
+  } catch (_error) {
+    viewerDownload.textContent = UI_TEXT[currentLanguage].downloadFailed;
+    window.setTimeout(() => {
+      viewerDownload.textContent = UI_TEXT[currentLanguage].download;
     }, 1400);
   }
 });
